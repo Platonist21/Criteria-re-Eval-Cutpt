@@ -1,5 +1,5 @@
 # Criteria-re-Eval-Cutpt
-Documentation and Supplement to the August 2019 AAPS paper
+Documentation and Supplement to the 2020 AAPS paper
 
 paper title: Criteria to Reevaluate Anti-drug Antibody Assay Cut Point Suitability in the Target Population
 
