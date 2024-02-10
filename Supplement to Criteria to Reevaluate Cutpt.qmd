@@ -6,14 +6,29 @@ editor: visual
 bibliography: Refs.bib
 ---
 
-When assessing previously determined cut points using in-study baseline samples or for a new population, it is a good practice not too quick to change when the sample size is small. @TAN2020 provided some distribution-free criteria on when the evidence is sufficient that adjustment is needed. Here, I seek to document the calculations in @TAN2020, and provide the detailed criteria for different sample sizes in a table format to assist the use of the paper in practice.
+When assessing previously determined cut points using in-study baseline samples or for a new population, it is a good practice not to change too hastily when the sample size is small. @TAN2020 provided distribution-free criteria on when the inherent sampling variability cannot be ruled out for the apparent deviation from the target rate. Here, I seek to document the calculations performed for @TAN2020, and provide the detailed criteria for different sample sizes in a data listing to assist the use of the paper in practice.
 
 ## Calculations behind Table 1
 
 ```{r}
 source("Funs.R")
-CalcLmt(size=c(50,100,150,200,250,300,400,500), pct=0.95)
-CalcLmt(size=c(50,100,150,200,250,300,400,500), pct=0.99)
+tab1t1 <- CalcLmt(size=c(50,100,150,200,250,300,400,500), pct=0.95)
+tab1t1 <- data.frame(tab1t1, tablow=tab1t1$size-tab1t1$upper,
+                     tabupp=tab1t1$size-tab1t1$lower)
+tab1t1 <- data.frame(tab1t1, tabPlow=tab1t1$tablow/tab1t1$size*100,
+                     tabPupp=tab1t1$tabupp/tab1t1$size*100)
+tab1t1
+```
+
+The above and the below are the calculations for tier 1 and 2 cut points, respectively. The first column **size** and the last four columns appeared in Table 1 of @TAN2020. These are ***Acceptable Ranges***. In other words, if the numbers of "positives" are within these ranges, the inherent sampling variability cannot be ruled out.
+
+```{r}
+tab1t2 <- CalcLmt(size=c(50,100,150,200,250,300,400,500), pct=0.99)
+tab1t2 <- data.frame(tab1t2, tablow=tab1t2$size-tab1t2$upper,
+                     tabupp=tab1t2$size-tab1t2$lower)
+tab1t2 <- data.frame(tab1t2, tabPlow=tab1t2$tablow/tab1t2$size*100,
+                     tabPupp=tab1t2$tabupp/tab1t2$size*100)
+tab1t2
 ```
 
 ## Data behind Figs 1 & 2
@@ -22,16 +37,24 @@ Figs 1 & 2 plot the same calculations on more refined grid: from sample size 20 
 
 ```{r}
 T1crit <- CalcLmt(size=20:500, pct=0.95)
+T1crit <- data.frame(T1crit, tablow=T1crit$size-T1crit$upper,
+                     tabupp=T1crit$size-T1crit$lower)
+T1crit <- data.frame(T1crit, tabPlow=T1crit$tablow/T1crit$size*100, 
+                     tabPupp=T1crit$tabupp/T1crit$size*100)
 T2crit <- CalcLmt(size=100:500, pct=0.99)
+T2crit <- data.frame(T2crit, tablow=T2crit$size-T2crit$upper,
+                     tabupp=T2crit$size-T2crit$lower)
+T2crit <- data.frame(T2crit, tabPlow=T2crit$tablow/T2crit$size*100, 
+                     tabPupp=T2crit$tabupp/T2crit$size*100)
 ```
 
-Here are the detailed criteria for tier 1 cut point:
+Below are the detailed ***Acceptable Ranges*** for tier 1 cut point (the last four columns):
 
 ```{r}
 T1crit
 ```
 
-Here are the detailed criteria for tier 2 cut point:
+Below are the detailed ***Acceptable Ranges*** for tier 2 cut point (the last four columns):
 
 ```{r}
 T2crit
@@ -39,7 +62,7 @@ T2crit
 
 ## Key Function
 
-The calculations are done by customized function **CalcLmt**
+The key calculations are done by the customized function **CalcLmt**
 
 ```{r}
 CalcLmt
@@ -67,7 +90,6 @@ legend(1, 35, lty=c(1,1), col=c("blue","red"),
 Here are the codes to produce Fig 2:
 
 ```{r}
-#| code-overflow: wrap
 #| fig-width: 10
 #| fig-height: 8
 plot(T1crit$size, T1crit$outupp*100, xlim=c(0, 500), ylim=c(0, 15), 
