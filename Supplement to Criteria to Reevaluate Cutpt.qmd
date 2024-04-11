@@ -1,7 +1,9 @@
 ---
 title: "Supplement to Criteria to Reevaluate Cutpt"
 author: "Charles Tan"
-format: pdf
+date: 4/11/2024
+date-format: long
+format: html
 editor: visual
 bibliography: Refs.bib
 ---
@@ -13,22 +15,24 @@ When assessing previously determined cut points using in-study baseline samples 
 ```{r}
 source("Funs.R")
 tab1t1 <- CalcLmt(size=c(50,100,150,200,250,300,400,500), pct=0.95)
-tab1t1 <- data.frame(tab1t1, tablow=tab1t1$size-tab1t1$upper,
-                     tabupp=tab1t1$size-tab1t1$lower)
-tab1t1 <- data.frame(tab1t1, tabPlow=tab1t1$tablow/tab1t1$size*100,
-                     tabPupp=tab1t1$tabupp/tab1t1$size*100)
-tab1t1
+tab1t1 <- subset(tab1t1, select=c(size, lower, upper))
+tab1t1 <- data.frame(tab1t1, Clow=tab1t1$size-tab1t1$upper,
+                     Cupp=tab1t1$size-tab1t1$lower)
+tab1t1 <- data.frame(tab1t1, Plow=tab1t1$Clow/tab1t1$size*100,
+                     Pupp=tab1t1$Cupp/tab1t1$size*100)
+knitr::kable(tab1t1)
 ```
 
 The above and the below are the calculations for tier 1 and 2 cut points, respectively. The first column **size** and the last four columns appeared in Table 1 of @TAN2020. These are ***Acceptable Ranges***. In other words, if the numbers of "positives" are within these ranges, the inherent sampling variability cannot be ruled out.
 
 ```{r}
 tab1t2 <- CalcLmt(size=c(50,100,150,200,250,300,400,500), pct=0.99)
-tab1t2 <- data.frame(tab1t2, tablow=tab1t2$size-tab1t2$upper,
-                     tabupp=tab1t2$size-tab1t2$lower)
-tab1t2 <- data.frame(tab1t2, tabPlow=tab1t2$tablow/tab1t2$size*100,
-                     tabPupp=tab1t2$tabupp/tab1t2$size*100)
-tab1t2
+tab1t2 <- subset(tab1t2, select=c(size, lower, upper))
+tab1t2 <- data.frame(tab1t2, Clow=tab1t2$size-tab1t2$upper,
+                     Cupp=tab1t2$size-tab1t2$lower)
+tab1t2 <- data.frame(tab1t2, Plow=round(tab1t2$Clow/tab1t2$size*100, digits=2),
+                     Pupp=round(tab1t2$Cupp/tab1t2$size*100, digits=2))
+knitr::kable(tab1t2)
 ```
 
 ## Data behind Figs 1 & 2
@@ -37,27 +41,31 @@ Figs 1 & 2 plot the same calculations on more refined grid: from sample size 20 
 
 ```{r}
 T1crit <- CalcLmt(size=20:500, pct=0.95)
-T1crit <- data.frame(T1crit, tablow=T1crit$size-T1crit$upper,
-                     tabupp=T1crit$size-T1crit$lower)
-T1crit <- data.frame(T1crit, tabPlow=T1crit$tablow/T1crit$size*100, 
-                     tabPupp=T1crit$tabupp/T1crit$size*100)
 T2crit <- CalcLmt(size=100:500, pct=0.99)
-T2crit <- data.frame(T2crit, tablow=T2crit$size-T2crit$upper,
-                     tabupp=T2crit$size-T2crit$lower)
-T2crit <- data.frame(T2crit, tabPlow=T2crit$tablow/T2crit$size*100, 
-                     tabPupp=T2crit$tabupp/T2crit$size*100)
 ```
 
 Below are the detailed ***Acceptable Ranges*** for tier 1 cut point (the last four columns):
 
 ```{r}
-T1crit
+#| warning: false
+T1tab <- subset(T1crit, select=c(size, lower, upper))
+T1tab <- data.frame(T1tab, Clow=T1tab$size-T1tab$upper,
+                     Cupp=T1tab$size-T1tab$lower)
+T1tab <- data.frame(T1tab, Plow=round(T1tab$Clow/T1tab$size*100, digits=2),
+                     Pupp=round(T1tab$Cupp/T1tab$size*100, digits=2))
+library(DT)
+datatable(T1tab)
 ```
 
 Below are the detailed ***Acceptable Ranges*** for tier 2 cut point (the last four columns):
 
 ```{r}
-T2crit
+T2tab <- subset(T2crit, select=c(size, lower, upper))
+T2tab <- data.frame(T2tab, Clow=T2tab$size-T2tab$upper,
+                     Cupp=T2tab$size-T2tab$lower)
+T2tab <- data.frame(T2tab, Plow=round(T2tab$Clow/T2tab$size*100, digits=2),
+                     Pupp=round(T2tab$Cupp/T2tab$size*100, digits=2))
+datatable(T2tab)
 ```
 
 ## Key Function
