@@ -1,9 +1,11 @@
 ---
 title: "Supplement to Criteria to Reevaluate Cutpt"
 author: "Charles Tan"
-date: 4/11/2024
+date: 4/12/2024
 date-format: long
-format: html
+format:
+  html:
+    embed-resources: true
 editor: visual
 bibliography: Refs.bib
 ---
